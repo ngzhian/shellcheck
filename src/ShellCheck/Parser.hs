@@ -474,8 +474,10 @@ readConditionContents single =
 
     readOp = try $ do
         char '-' <|> weirdDash
-        s <- many1 letter <|> fail "Expected a test operator"
-        return ('-':s)
+        s <- readNormalWord
+        return $ case s of
+            T_NormalWord _ x -> ('-':onlyLiteralString s)
+            _ -> fail "Expected a test operator"
 
     weirdDash = do
         pos <- getPosition
